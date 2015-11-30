@@ -10,8 +10,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
-import genericdao.util.UtilReflection;
 import genericdao.DAO;
+import genericdao.util.UtilReflection;
 
 public class JpaDAO<T> implements DAO<T> {
 
@@ -91,6 +91,14 @@ public class JpaDAO<T> implements DAO<T> {
             Class<T2> returnClass) {
         return dynamicJPQLQueries.get(namedQuery).build(parameters, entityManager, returnClass).getResultList();
 
+    }
+
+    protected EntityManager getEntityManager() {
+        return entityManager;
+    }
+
+    protected void setEntityManager(EntityManager entityManager) {
+        this.entityManager = entityManager;
     }
 
 }
