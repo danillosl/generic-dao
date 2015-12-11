@@ -16,60 +16,60 @@ import com.google.common.base.Preconditions;
 
 class JPQLBuilder {
 
-    private Map<String, List<String>> mapQueryPartsAndNamedParameters;
+	private Map<String, List<String>> mapQueryPartsAndNamedParameters;
 
-    private static final Pattern PARAMETER_PATTERN = Pattern.compile(":(\\w+)");
+	private static final Pattern PARAMETER_PATTERN = Pattern.compile(":(\\w+)");
 
-    JPQLBuilder(List<String> queryParts) {
-        this.mapQueryPartsAndNamedParameters = JPQLBuilder.loadQueryPartsAndNamedParameters(queryParts);
-    }
+	JPQLBuilder(List<String> queryParts) {
+		this.mapQueryPartsAndNamedParameters = JPQLBuilder.loadQueryPartsAndNamedParameters(queryParts);
+	}
 
-    private static Map<String, List<String>> loadQueryPartsAndNamedParameters(List<String> queryParts) {
-        Map<String, List<String>> pMapQueryPartsAndNamedParameters = new LinkedHashMap<String, List<String>>();
-        for (String queryPart : queryParts) {
+	private static Map<String, List<String>> loadQueryPartsAndNamedParameters(List<String> queryParts) {
+		Map<String, List<String>> pMapQueryPartsAndNamedParameters = new LinkedHashMap<String, List<String>>();
+		for (String queryPart : queryParts) {
 
-            pMapQueryPartsAndNamedParameters.put(queryPart, JPQLBuilder.findParameters(queryPart));
-        }
-        return pMapQueryPartsAndNamedParameters;
-    }
+			pMapQueryPartsAndNamedParameters.put(queryPart, JPQLBuilder.findParameters(queryPart));
+		}
+		return pMapQueryPartsAndNamedParameters;
+	}
 
-    <T> TypedQuery<T> build(Map<String, Object> parameters, EntityManager entityManager, Class<T> clazz) {
+	<T> TypedQuery<T> build(Map<String, Object> parameters, EntityManager entityManager, Class<T> clazz) {
 
-        Preconditions.checkNotNull(parameters, "parameters must not be null.");
-        Preconditions.checkNotNull(entityManager, "entityManager must not be null.");
-        Map<String, Object> unmodifiableParameters = Collections.unmodifiableMap(parameters);
+		Preconditions.checkNotNull(parameters, "parameters must not be null.");
+		Preconditions.checkNotNull(entityManager, "entityManager must not be null.");
+		Map<String, Object> unmodifiableParameters = Collections.unmodifiableMap(parameters);
 
-        String jpql = buildDynamicQueryString(unmodifiableParameters);
+		String jpql = buildDynamicQueryString(unmodifiableParameters);
 
-        TypedQuery<T> typedQuery = entityManager.createQuery(jpql, clazz);
+		TypedQuery<T> typedQuery = entityManager.createQuery(jpql, clazz);
 
-        for (Entry<String, Object> parameter : parameters.entrySet()) {
-            typedQuery.setParameter(parameter.getKey(), parameter.getValue());
-        }
+		for (Entry<String, Object> parameter : parameters.entrySet()) {
+			typedQuery.setParameter(parameter.getKey(), parameter.getValue());
+		}
 
-        return typedQuery;
-    }
+		return typedQuery;
+	}
 
-    private String buildDynamicQueryString(Map<String, Object> parameters) {
-        StringBuilder builder = new StringBuilder();
-        for (Entry<String, List<String>> queryPartAndParameters : mapQueryPartsAndNamedParameters.entrySet()) {
-            if (parameters.keySet().containsAll(queryPartAndParameters.getValue())) {
-                builder.append(queryPartAndParameters.getKey()).append(" ");
-            }
-        }
-        return builder.toString();
-    }
+	private String buildDynamicQueryString(Map<String, Object> parameters) {
+		StringBuilder builder = new StringBuilder();
+		for (Entry<String, List<String>> queryPartAndParameters : mapQueryPartsAndNamedParameters.entrySet()) {
+			if (parameters.keySet().containsAll(queryPartAndParameters.getValue())) {
+				builder.append(queryPartAndParameters.getKey()).append(" ");
+			}
+		}
+		return builder.toString();
+	}
 
-    private static List<String> findParameters(String queryPart) {
+	private static List<String> findParameters(String queryPart) {
 
-        final List<String> parameters = new ArrayList<String>();
+		final List<String> parameters = new ArrayList<String>();
 
-        Matcher matcher = PARAMETER_PATTERN.matcher(queryPart);
+		Matcher matcher = PARAMETER_PATTERN.matcher(queryPart);
 
-        while (matcher.find()) {
-            parameters.add(matcher.group().substring(1));
-        }
-        return parameters;
-    }
+		while (matcher.find()) {
+			parameters.add(matcher.group().substring(1));
+		}
+		return parameters;
+	}
 
 }
