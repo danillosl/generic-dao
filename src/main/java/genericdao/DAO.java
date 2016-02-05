@@ -6,26 +6,26 @@ import java.util.Map;
 
 public interface DAO<T> {
 
-    List<T> findAll();
+	List<T> findAll();
 
-    void create(T entity);
+	List<T> findAll(Integer startPosition, Integer maxResult);
 
-    T update(T entity);
+	void create(T entity);
 
-    void delete(T entity);
+	T update(T entity);
 
-    public <P extends Serializable> T findOne(final P id);
+	void delete(T entity);
 
-    public <P extends Serializable> void deleteById(P id);
+	<P extends Serializable> T findOne(P id);
 
-    public <T2> T2 getNamedQuerySingleResult(String namedQuery, Map<String, Object> parameters, Class<T2> returnClass);
+	<P extends Serializable> void deleteById(P id);
 
-    public <T2> List<T2> getNamedQueryResultList(String namedQuery, Map<String, Object> parameters,
-            Class<T2> returnClass);
+	<T2> T2 getNamedQuerySingleResult(String namedQuery, Map<String, Object> parameters, Class<T2> returnClass);
 
-    public <T2> T2 getJPQLQuerySingleResult(String namedQuery, Map<String, Object> parameters, Class<T2> returnClass);
+	<T2> List<T2> getNamedQueryResultList(String namedQuery, Map<String, Object> parameters, Class<T2> returnClass);
 
-    public <T2> List<T2> getJPQLQueryResultList(String namedQuery, Map<String, Object> parameters,
-            Class<T2> returnClass);
+	<T2> T2 getJPQLQuerySingleResult(String namedQuery, Map<String, Object> parameters, Class<T2> returnClass);
+
+	<T2> List<T2> getJPQLQueryResultList(String namedQuery, Map<String, Object> parameters, Class<T2> returnClass);
 
 }
