@@ -11,6 +11,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import genericdao.DAO;
+import genericdao.annotations.NamedQuery;
 import genericdao.util.UtilReflection;
 
 public class JpaDAO<T> implements DAO<T> {
@@ -27,13 +28,13 @@ public class JpaDAO<T> implements DAO<T> {
 	@SuppressWarnings("unchecked")
 	protected JpaDAO() {
 		this.clazz = (Class<T>) UtilReflection.getGenericParameterClass(this.getClass(), TYPED_PARAMETER_INDEX);
-		this.dynamicJPQLQueries = this.loadJPQLBuilders(UtilReflection.carregaDynamicQueries(this.getClass()));
+		this.dynamicJPQLQueries = this.loadJPQLBuilders(UtilReflection.loadDynamicQueries(this.getClass()));
 	}
 
-	private Map<String, JPQLBuilder> loadJPQLBuilders(Map<String, List<String>> dynamicQueries) {
+	private Map<String, JPQLBuilder> loadJPQLBuilders(List<NamedQuery> NamedQueries) {
 		Map<String, JPQLBuilder> pDynamicJPQLQueries = new LinkedHashMap<String, JPQLBuilder>();
-		for (Entry<String, List<String>> element : dynamicQueries.entrySet()) {
-			pDynamicJPQLQueries.put(element.getKey(), new JPQLBuilder(element.getValue()));
+		for (NamedQuery namedQuery : NamedQueries) {
+			pDynamicJPQLQueries.put(namedQuery.name(), new JPQLBuilder(namedQuery.query()));
 		}
 		return pDynamicJPQLQueries;
 	}
@@ -41,12 +42,10 @@ public class JpaDAO<T> implements DAO<T> {
 	public List<T> findAll() {
 		return entityManager.createQuery("from " + clazz.getName(), clazz).getResultList();
 	}
-	
+
 	public List<T> findAll(Integer startPosition, Integer maxResult) {
 		return entityManager.createQuery("from " + clazz.getName(), clazz)
-				.setFirstResult((startPosition-1) * maxResult)
-				.setMaxResults(maxResult)
-				.getResultList();
+				.setFirstResult((startPosition - 1) * maxResult).setMaxResults(maxResult).getResultList();
 	}
 
 	public void create(final T entity) {

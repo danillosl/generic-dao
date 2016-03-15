@@ -7,10 +7,8 @@ import java.lang.annotation.Target;
 
 @Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-public @interface DynamicNamedQuery {
+public @interface NamedQueries {
 
-    String name();
-
-    String[] query();
+    NamedQuery[] value();
 
 }

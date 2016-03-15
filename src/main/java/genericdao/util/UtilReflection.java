@@ -2,50 +2,46 @@ package genericdao.util;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
-import genericdao.annotations.DynamicNamedQueries;
-import genericdao.annotations.DynamicNamedQuery;
+import genericdao.annotations.NamedQueries;
+import genericdao.annotations.NamedQuery;
 
 public class UtilReflection {
 
-    private UtilReflection() {
+	private UtilReflection() {
 
-    }
+	}
 
-    public static Map<String, List<String>> carregaDynamicQueries(final Class<?> clazz) {
+	public static List<NamedQuery> loadDynamicQueries(final Class<?> clazz) {
 
-        Map<String, List<String>> dynamicJPQLQueries = new LinkedHashMap<String, List<String>>();
-        DynamicNamedQueries dynamicNamedQueries;
-        if (clazz.isAnnotationPresent(DynamicNamedQueries.class)) {
+		List<NamedQuery> namedQueriesList = new LinkedList<NamedQuery>();
 
-            dynamicNamedQueries = clazz.getAnnotation(DynamicNamedQueries.class);
+		if (clazz.isAnnotationPresent(NamedQueries.class)) {
 
-            DynamicNamedQuery[] value = dynamicNamedQueries.value();
-            for (DynamicNamedQuery dynamicNamedQuery : value) {
-                dynamicJPQLQueries.put(dynamicNamedQuery.name(), Arrays.asList(dynamicNamedQuery.query()));
-            }
+			NamedQueries namedQueries = clazz.getAnnotation(NamedQueries.class);
 
-        }
+			for (NamedQuery namedQuery : namedQueries.value()) {
+				namedQueriesList.add(namedQuery);
+			}
 
-        return dynamicJPQLQueries;
-    }
+		}
+		return namedQueriesList;
+	}
 
-    public static Class<?> getGenericParameterClass(final Class<?> clazz, final Integer index) {
+	public static Class<?> getGenericParameterClass(final Class<?> clazz, final Integer index) {
 
-        Type[] superClassTypes = null;
+		Type[] superClassTypes = null;
 
-        Type genericSuperclass = clazz.getGenericSuperclass();
+		Type genericSuperclass = clazz.getGenericSuperclass();
 
-        if (genericSuperclass instanceof ParameterizedType) {
-            ParameterizedType parameterizedType = (ParameterizedType) genericSuperclass;
+		if (genericSuperclass instanceof ParameterizedType) {
+			ParameterizedType parameterizedType = (ParameterizedType) genericSuperclass;
 
-            superClassTypes = parameterizedType.getActualTypeArguments();
-        }
-        return (Class<?>) superClassTypes[index];
-    }
+			superClassTypes = parameterizedType.getActualTypeArguments();
+		}
+		return (Class<?>) superClassTypes[index];
+	}
 
 }

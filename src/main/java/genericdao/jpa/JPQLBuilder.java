@@ -1,6 +1,7 @@
 package genericdao.jpa;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -22,6 +23,10 @@ class JPQLBuilder {
 
 	JPQLBuilder(List<String> queryParts) {
 		this.mapQueryPartsAndNamedParameters = JPQLBuilder.loadQueryPartsAndNamedParameters(queryParts);
+	}
+
+	JPQLBuilder(String[] queryParts) {
+		this.mapQueryPartsAndNamedParameters = JPQLBuilder.loadQueryPartsAndNamedParameters(Arrays.asList(queryParts));
 	}
 
 	private static Map<String, List<String>> loadQueryPartsAndNamedParameters(List<String> queryParts) {
