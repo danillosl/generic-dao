@@ -1,9 +1,7 @@
 package genericdao.jpa;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -15,27 +13,20 @@ import javax.persistence.TypedQuery;
 
 import com.google.common.base.Preconditions;
 
+import genericdao.annotations.NamedQuery;
+
 class JPQLBuilder {
 
 	private Map<String, List<String>> mapQueryPartsAndNamedParameters;
 
 	private static final Pattern PARAMETER_PATTERN = Pattern.compile(":(\\w+)");
 
-	JPQLBuilder(List<String> queryParts) {
-		this.mapQueryPartsAndNamedParameters = JPQLBuilder.loadQueryPartsAndNamedParameters(queryParts);
-	}
+	JPQLBuilder(NamedQuery namedQuery) {
 
-	JPQLBuilder(String[] queryParts) {
-		this.mapQueryPartsAndNamedParameters = JPQLBuilder.loadQueryPartsAndNamedParameters(Arrays.asList(queryParts));
-	}
+		for (String queryPart : namedQuery.query()) {
 
-	private static Map<String, List<String>> loadQueryPartsAndNamedParameters(List<String> queryParts) {
-		Map<String, List<String>> pMapQueryPartsAndNamedParameters = new LinkedHashMap<String, List<String>>();
-		for (String queryPart : queryParts) {
-
-			pMapQueryPartsAndNamedParameters.put(queryPart, JPQLBuilder.findParameters(queryPart));
+			this.mapQueryPartsAndNamedParameters.put(queryPart, JPQLBuilder.findParameters(queryPart));
 		}
-		return pMapQueryPartsAndNamedParameters;
 	}
 
 	<T> TypedQuery<T> build(Map<String, Object> parameters, EntityManager entityManager, Class<T> clazz) {

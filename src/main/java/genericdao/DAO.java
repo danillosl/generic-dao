@@ -27,5 +27,7 @@ public interface DAO<T> {
 	<T2> T2 getJPQLQuerySingleResult(String namedQuery, Map<String, Object> parameters, Class<T2> returnClass);
 
 	<T2> List<T2> getJPQLQueryResultList(String namedQuery, Map<String, Object> parameters, Class<T2> returnClass);
+	
+	
 
 }

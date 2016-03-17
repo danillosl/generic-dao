@@ -34,7 +34,7 @@ public class JpaDAO<T> implements DAO<T> {
 	private Map<String, JPQLBuilder> loadJPQLBuilders(List<NamedQuery> NamedQueries) {
 		Map<String, JPQLBuilder> pDynamicJPQLQueries = new LinkedHashMap<String, JPQLBuilder>();
 		for (NamedQuery namedQuery : NamedQueries) {
-			pDynamicJPQLQueries.put(namedQuery.name(), new JPQLBuilder(namedQuery.query()));
+			pDynamicJPQLQueries.put(namedQuery.name(), new JPQLBuilder(namedQuery));
 		}
 		return pDynamicJPQLQueries;
 	}
@@ -89,7 +89,7 @@ public class JpaDAO<T> implements DAO<T> {
 	}
 
 	public <T2> T2 getJPQLQuerySingleResult(String namedQuery, Map<String, Object> parameters, Class<T2> returnClass) {
-		return dynamicJPQLQueries.get(namedQuery).build(parameters, entityManager, returnClass).getSingleResult();
+		return (T2) dynamicJPQLQueries.get(namedQuery).build(parameters, entityManager, returnClass).getSingleResult();
 
 	}
 
