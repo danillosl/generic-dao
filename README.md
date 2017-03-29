@@ -55,7 +55,7 @@ And then use it like so:
 ```java
 private DAO<User> userDAO = new UserDAO();
 
-List<User> query2(String p1, String p2, String p3, String p4) {
+List<User> query(String p1, String p2, String p3, String p4) {
 
 		Map<String, Object> mapParameters = new HashMap<String, Object>();
 		mapParameters.put("p1", p1);
