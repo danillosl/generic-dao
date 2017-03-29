@@ -15,17 +15,17 @@ import com.google.common.base.Preconditions;
 
 import genericdao.annotations.NamedQuery;
 
-class JPQLBuilder {
+class JPQLQueryTemplate {
 
 	private Map<String, List<String>> mapQueryPartsAndNamedParameters;
 
 	private static final Pattern PARAMETER_PATTERN = Pattern.compile(":(\\w+)");
 
-	JPQLBuilder(NamedQuery namedQuery) {
+	JPQLQueryTemplate(NamedQuery namedQuery) {
 
 		for (String queryPart : namedQuery.query()) {
 
-			this.mapQueryPartsAndNamedParameters.put(queryPart, JPQLBuilder.findParameters(queryPart));
+			this.mapQueryPartsAndNamedParameters.put(queryPart, findParameters(queryPart));
 		}
 	}
 
@@ -33,9 +33,10 @@ class JPQLBuilder {
 
 		Preconditions.checkNotNull(parameters, "parameters must not be null.");
 		Preconditions.checkNotNull(entityManager, "entityManager must not be null.");
+
 		Map<String, Object> unmodifiableParameters = Collections.unmodifiableMap(parameters);
 
-		String jpql = buildDynamicQueryString(unmodifiableParameters);
+		String jpql = this.buildJPQL(unmodifiableParameters);
 
 		TypedQuery<T> typedQuery = entityManager.createQuery(jpql, clazz);
 
@@ -46,7 +47,7 @@ class JPQLBuilder {
 		return typedQuery;
 	}
 
-	private String buildDynamicQueryString(Map<String, Object> parameters) {
+	private String buildJPQL(Map<String, Object> parameters) {
 		StringBuilder builder = new StringBuilder();
 		for (Entry<String, List<String>> queryPartAndParameters : mapQueryPartsAndNamedParameters.entrySet()) {
 			if (parameters.keySet().containsAll(queryPartAndParameters.getValue())) {
@@ -56,7 +57,7 @@ class JPQLBuilder {
 		return builder.toString();
 	}
 
-	private static List<String> findParameters(String queryPart) {
+	private List<String> findParameters(String queryPart) {
 
 		final List<String> parameters = new ArrayList<String>();
 
@@ -66,6 +67,10 @@ class JPQLBuilder {
 			parameters.add(matcher.group().substring(1));
 		}
 		return parameters;
+	}
+
+	public Map<String, List<String>> getMapQueryPartsAndNamedParameters() {
+		return Collections.unmodifiableMap(mapQueryPartsAndNamedParameters);
 	}
 
 }

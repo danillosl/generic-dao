@@ -1,4 +1,4 @@
-package genericdao.util;
+package genericdao;
 
 public enum QueryType {
 

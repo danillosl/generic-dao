@@ -16,35 +16,34 @@ import genericdao.util.UtilReflection;
 
 public class JpaDAO<T> implements DAO<T> {
 
-	private Class<T> clazz;
+	private Class<T> genericParameterClass;
 
 	@PersistenceContext
 	private EntityManager entityManager;
 
-	private static final int TYPED_PARAMETER_INDEX = 0;
-
-	private Map<String, JPQLBuilder> dynamicJPQLQueries;
+	private Map<String, JPQLQueryTemplate> dynamicJPQLQueries;
 
 	@SuppressWarnings("unchecked")
 	protected JpaDAO() {
-		this.clazz = (Class<T>) UtilReflection.getGenericParameterClass(this.getClass(), TYPED_PARAMETER_INDEX);
-		this.dynamicJPQLQueries = this.loadJPQLBuilders(UtilReflection.loadDynamicQueries(this.getClass()));
+		this.genericParameterClass = (Class<T>) UtilReflection.getGenericParameterClass(this.getClass());
+		List<NamedQuery> namedQueries = UtilReflection.getNamedQueries(this.getClass());
+		this.dynamicJPQLQueries = this.processJPQLBuilders(namedQueries);
 	}
 
-	private Map<String, JPQLBuilder> loadJPQLBuilders(List<NamedQuery> NamedQueries) {
-		Map<String, JPQLBuilder> pDynamicJPQLQueries = new LinkedHashMap<String, JPQLBuilder>();
+	private Map<String, JPQLQueryTemplate> processJPQLBuilders(List<NamedQuery> NamedQueries) {
+		Map<String, JPQLQueryTemplate> dynamicJPQLQueries = new LinkedHashMap<String, JPQLQueryTemplate>();
 		for (NamedQuery namedQuery : NamedQueries) {
-			pDynamicJPQLQueries.put(namedQuery.name(), new JPQLBuilder(namedQuery));
+			dynamicJPQLQueries.put(namedQuery.name(), new JPQLQueryTemplate(namedQuery));
 		}
-		return pDynamicJPQLQueries;
+		return dynamicJPQLQueries;
 	}
 
 	public List<T> findAll() {
-		return entityManager.createQuery("from " + clazz.getName(), clazz).getResultList();
+		return entityManager.createQuery("from " + genericParameterClass.getName(), genericParameterClass).getResultList();
 	}
 
 	public List<T> findAll(Integer startPosition, Integer maxResult) {
-		return entityManager.createQuery("from " + clazz.getName(), clazz)
+		return entityManager.createQuery("from " + genericParameterClass.getName(), genericParameterClass)
 				.setFirstResult((startPosition - 1) * maxResult).setMaxResults(maxResult).getResultList();
 	}
 
@@ -67,7 +66,7 @@ public class JpaDAO<T> implements DAO<T> {
 
 	public <P extends Serializable> T findOne(final P id) {
 
-		return entityManager.find(clazz, id);
+		return entityManager.find(genericParameterClass, id);
 	}
 
 	public <T2> T2 getNamedQuerySingleResult(String namedQuery, Map<String, Object> parameters, Class<T2> returnClass) {

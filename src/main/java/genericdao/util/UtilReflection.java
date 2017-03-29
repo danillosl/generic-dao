@@ -10,11 +10,10 @@ import genericdao.annotations.NamedQuery;
 
 public class UtilReflection {
 
-	private UtilReflection() {
+	private static final int TYPED_PARAMETER_INDEX = 0;
 
-	}
 
-	public static List<NamedQuery> loadDynamicQueries(final Class<?> clazz) {
+	public static List<NamedQuery> getNamedQueries(final Class<?> clazz) {
 
 		List<NamedQuery> namedQueriesList = new LinkedList<NamedQuery>();
 
@@ -30,7 +29,7 @@ public class UtilReflection {
 		return namedQueriesList;
 	}
 
-	public static Class<?> getGenericParameterClass(final Class<?> clazz, final Integer index) {
+	public static Class<?> getGenericParameterClass(final Class<?> clazz) {
 
 		Type[] superClassTypes = null;
 
@@ -41,7 +40,7 @@ public class UtilReflection {
 
 			superClassTypes = parameterizedType.getActualTypeArguments();
 		}
-		return (Class<?>) superClassTypes[index];
+		return (Class<?>) superClassTypes[TYPED_PARAMETER_INDEX];
 	}
 
 }
