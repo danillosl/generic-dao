@@ -39,10 +39,15 @@ List<User> query(String p1, String p2, String p3, String p4) {
 Now just annotate your DAO with @NamedQueries, and put all your queries splited in the query parts like the follow:
 
 ```java
-@NamedQueries({ @NamedQuery(name = "User.Find", 
-							query = { "Select u from User u where 1=1",
-									"AND u.p1 = :p1", "AND u.p2 = :p2",
-									"AND u.p3 = :p3", "AND u.p4 = :p4" }), })
+@NamedQueries({
+	
+	@NamedQuery(
+	name = "User.Find", 
+	query = { "Select u from User u where 1=1",
+			"AND u.p1 = :p1", "AND u.p2 = :p2",
+			"AND u.p3 = :p3", "AND u.p4 = :p4" }),
+	})
+
 public class UserDAO extends JpaDAO<User> {}
 
 ```
