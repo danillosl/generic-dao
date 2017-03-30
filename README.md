@@ -1,10 +1,13 @@
-# generic-dao
+# Generic-Dao
 
-## DEPRECATED
+### DEPRECATED!!!
 
-Guys this is a very old framework now, back in the day, the criteria API was horrible (still is!) and developers prefer to adventure in very weird ways to build their queries with JPA, now frameworks like Spring Data and queryDSL provide every tring 
+Guys, this is an old Framework now, back in the day, the Criteria API was horrible (still is!) and developers preferred to venture in very obscure ways with if statements to build their dynamic queries with JPA, this framework helped to keep the cyclomatic complexity down without the use of Criteria API or opinionate too much in the code. 
+Today frameworks like Spring Data and queryDSL provide everything you need from Query Methods (queries based on the name of the method) to typesafe queries, so prefer to use those frameworks over this one.
 
-A very simple framework that helps you build your dynamic queries, this is for those who hate the criteria API and prefer to use if statements to build their queries, making the ciclomatic complexity go grazy.
+# Description
+
+A very simple Framework that helps you build your dynamic queries, this is for those who hate the Criteria API and prefer to use if statements to build their queries, making the cyclomatic complexity go crazy.
 
 
 Old way:
