@@ -48,7 +48,7 @@ List<User> query(String p1, String p2, String p3, String p4) {
 
 	}
 ```
-Now just annotate your DAO with @NamedQueries, and put all your queries splited in the query parts like the follow:
+Now just annotate your DAO with @NamedQueries, and put all your queries splitted in the query parts like the follow:
 
 ```java
 @NamedQueries({
