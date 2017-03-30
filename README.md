@@ -1,3 +1,12 @@
+# generic-dao
+
+## DEPRECATED
+
+Guys this is a very old framework now, back in the day, the criteria API was horrible (still is!) and developers prefer to adventure in very weird ways to build their queries with JPA, now frameworks like Spring Data and queryDSL provide every tring 
+
+A very simple framework that helps you build your dynamic queries, this is for those who hate the criteria API and prefer to use if statements to build their queries, making the ciclomatic complexity go grazy.
+
+
 Old way:
 
 ```java
@@ -67,3 +76,5 @@ List<User> query(String p1, String p2, String p3, String p4) {
 
 	}
 ```
+
+No more crazy cyclomatic complexity, no criteria API either;
